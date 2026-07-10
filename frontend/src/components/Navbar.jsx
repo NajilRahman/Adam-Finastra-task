@@ -38,7 +38,7 @@ const Navbar = () => {
       <div className="navbar-logo">
         <ShieldAlert size={28} className="logo-icon" />
         <div>
-          <h2>AURA EMR</h2>
+          <h2>Adam Finastra EMR</h2>
           <span>Enterprise Portal</span>
         </div>
       </div>

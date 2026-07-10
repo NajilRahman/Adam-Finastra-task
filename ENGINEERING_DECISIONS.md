@@ -1,6 +1,6 @@
 # Engineering Decisions
 
-This document outlines the technical architecture, design patterns, and engineering decisions implemented in the Aura EMR Appointment Management System.
+This document outlines the technical architecture, design patterns, and engineering decisions implemented in the Adam Finastra EMR Appointment Management System.
 
 ---
 
@@ -83,7 +83,7 @@ We configured specific indexes to ensure fast response times during lookups:
 
 ## 7. Scaling to Millions of Appointments
 
-If Aura EMR grows to support millions of appointments, the following architectural upgrades would be recommended:
+If Adam Finastra EMR grows to support millions of appointments, the following architectural upgrades would be recommended:
 
 1. **Database Sharding**: Shard the `appointments` collection by `doctor` or `date`. Since queries are mostly filtered by date and doctor, this distributes read/write loads evenly across MongoDB nodes.
 2. **Caching Slot Grids (Redis)**: Slot generation is computationally heavy. We can cache doctor schedules and daily slots in Redis. When an appointment is booked or cancelled, the cache is invalidated.

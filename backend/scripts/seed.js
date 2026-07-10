@@ -35,7 +35,7 @@ const seedDB = async () => {
 
     // 1. Create Super Admin
     const admin = new User({
-      name: 'Emma Admin',
+      name: 'Adam Admin',
       email: 'admin@emr.com',
       password: 'admin123',
       role: 'super_admin'

@@ -1,4 +1,4 @@
-# Aura EMR - Enterprise Appointment Management System
+# Adam Finastra EMR - Enterprise Appointment Management System
 
 A production-ready Enterprise EMR Appointment Management System built with the **MERN Stack** (Node.js, Express, MongoDB, React, Redux Toolkit, Socket.IO). 
 
@@ -21,7 +21,7 @@ The application is engineered with a secure Service-Layer architecture, database
 ## 📁 Project Directory Structure
 
 ```
-Aura-EMR/
+Adam-Finastra-EMR/
 │
 ├── backend/
 │   ├── config/               # DB connections & Socket servers

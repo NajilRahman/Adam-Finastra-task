@@ -51,7 +51,7 @@ const Login = () => {
           <div className="login-logo">
             <ShieldAlert size={36} />
           </div>
-          <h1>AURA EMR</h1>
+          <h1>Adam Finastra EMR</h1>
           <p>Enterprise Clinic Appointment Manager</p>
         </div>
 
