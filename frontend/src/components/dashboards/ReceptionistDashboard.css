@@ -1,5 +1,5 @@
 .receptionist-dashboard {
-  padding: 40px;
+  padding: 40px 24px;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -9,13 +9,14 @@
 }
 
 .receptionist-header h1 {
-  font-size: 2rem;
-  color: #fff;
+  font-size: 1.75rem;
+  color: var(--text-primary);
   margin-bottom: 8px;
+  font-weight: 700;
 }
 
 .receptionist-header p {
-  color: var(--text-secondary);
+  color: var(--text-muted);
   font-size: 0.95rem;
 }
 
@@ -29,225 +30,4 @@
   .receptionist-grid {
     grid-template-columns: 1fr;
   }
-}
-
-.card-header-flex {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.card-header-flex h2 {
-  font-size: 1.4rem;
-  color: #fff;
-}
-
-.btn-sm {
-  padding: 8px 16px !important;
-  font-size: 0.8rem !important;
-}
-
-.search-form {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.search-input-wrap {
-  position: relative;
-  flex: 1;
-}
-
-.search-icon {
-  position: absolute;
-  left: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-muted);
-}
-
-.search-input {
-  padding-left: 42px !important;
-}
-
-.status-text {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  text-align: center;
-  padding: 20px 0;
-}
-
-.no-results-alert {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background-color: rgba(245, 158, 11, 0.05);
-  border: 1px solid rgba(245, 158, 11, 0.15);
-  padding: 16px;
-  border-radius: var(--radius-sm);
-  color: #fbbf24;
-  font-size: 0.95rem;
-}
-
-.patient-result-card {
-  display: flex;
-  align-items: center;
-  padding: 16px !important;
-  margin-bottom: 12px;
-  background-color: rgba(255, 255, 255, 0.02) !important;
-}
-
-.patient-avatar {
-  width: 42px;
-  height: 42px;
-  background-color: var(--primary-glow);
-  color: #2dd4bf;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 16px;
-}
-
-.patient-info-summary {
-  flex: 1;
-}
-
-.patient-info-summary h3 {
-  font-size: 1.05rem;
-  color: #fff;
-  margin-bottom: 2px;
-}
-
-.p-id {
-  font-family: var(--font-heading);
-  font-weight: 700;
-  color: var(--text-muted);
-  font-size: 0.75rem;
-}
-
-.p-contact {
-  display: flex;
-  gap: 14px;
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  margin-top: 4px;
-}
-
-.p-contact span {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.book-now-btn {
-  padding: 8px 16px !important;
-  font-size: 0.85rem !important;
-}
-
-/* Registration Form layout */
-.form-grid-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-.form-alert {
-  padding: 12px 16px;
-  border-radius: var(--radius-sm);
-  font-size: 0.85rem;
-  margin-bottom: 16px;
-  text-align: center;
-}
-
-/* Today's appointments styling */
-.today-appointments-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.today-app-item {
-  display: flex;
-  align-items: center;
-  padding: 16px !important;
-  background-color: rgba(255, 255, 255, 0.02) !important;
-  border: 1px solid var(--border-light) !important;
-}
-
-.app-time-badge {
-  background-color: var(--primary-glow);
-  border: 1px solid var(--primary);
-  color: #2dd4bf;
-  padding: 8px 12px;
-  border-radius: var(--radius-sm);
-  font-family: var(--font-heading);
-  font-weight: 700;
-  font-size: 1.05rem;
-  text-align: center;
-  min-width: 65px;
-  margin-right: 16px;
-}
-
-.app-patient-info {
-  flex: 1;
-}
-
-.app-patient-info h4 {
-  font-size: 1.05rem;
-  color: #fff;
-  margin-bottom: 4px;
-}
-
-.app-patient-info span {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-}
-
-.app-status-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.action-buttons-wrap {
-  display: flex;
-  gap: 6px;
-}
-
-.action-icon-btn {
-  width: 28px;
-  height: 28px;
-  border-radius: 4px;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all var(--transition-fast);
-}
-
-.btn-arrive {
-  background-color: rgba(16, 185, 129, 0.15);
-  color: #34d399;
-  border: 1px solid rgba(16, 185, 129, 0.3);
-}
-
-.btn-arrive:hover {
-  background-color: var(--success);
-  color: #fff;
-  box-shadow: 0 4px 10px var(--success-glow);
-}
-
-.btn-cancel {
-  background-color: rgba(244, 63, 94, 0.15);
-  color: #f87171;
-  border: 1px solid rgba(244, 63, 94, 0.3);
-}
-
-.btn-cancel:hover {
-  background-color: var(--danger);
-  color: #fff;
-  box-shadow: 0 4px 10px var(--danger-glow);
 }
