@@ -68,3 +68,24 @@ export const cancelAppointment = catchAsync(async (req, res) => {
     data: appointment
   });
 });
+
+export const searchPatients = catchAsync(async (req, res) => {
+  const { q } = req.query;
+  const patients = await appointmentService.searchPatients(q);
+
+  res.status(200).json({
+    success: true,
+    message: 'Patients search completed successfully',
+    data: patients
+  });
+});
+
+export const createPatient = catchAsync(async (req, res) => {
+  const patient = await appointmentService.createPatient(req.body);
+
+  res.status(201).json({
+    success: true,
+    message: 'Patient registered successfully',
+    data: patient
+  });
+});

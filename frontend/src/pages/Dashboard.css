@@ -1,0 +1,25 @@
+.dashboard-main-content {
+  background-color: var(--bg-main);
+  min-height: 100vh;
+  overflow-y: auto;
+  padding-bottom: 50px;
+}
+
+@media (max-width: 992px) {
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+  
+  .navbar-container {
+    height: auto;
+    position: relative;
+    padding: 16px;
+  }
+  
+  .navbar-links {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 16px;
+  }
+}

@@ -16,6 +16,10 @@ router.use(protect);
 // Retrieve appointment list (Doctors filtered to own, Receptionists & Admins get full access)
 router.get('/', appointmentController.getAppointments);
 
+// Patient Search & Registration (Receptionist & Super Admin only)
+router.get('/patients/search', restrictTo('receptionist', 'super_admin'), appointmentController.searchPatients);
+router.post('/patients', restrictTo('receptionist', 'super_admin'), appointmentController.createPatient);
+
 // Create new appointment (Receptionist & Super Admin only)
 router.post(
   '/',

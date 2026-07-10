@@ -328,3 +328,38 @@ export const cancelAppointment = async (id, userContext) => {
 
   return populated;
 };
+
+export const searchPatients = async (q) => {
+  if (!q) return [];
+  return await Patient.find({
+    $or: [
+      { name: { $regex: q, $options: 'i' } },
+      { patientId: { $regex: q, $options: 'i' } },
+      { mobileNumber: { $regex: q } }
+    ]
+  });
+};
+
+export const createPatient = async (patientData) => {
+  const { name, mobileNumber, email, dateOfBirth, gender } = patientData;
+  
+  const existing = await Patient.findOne({ mobileNumber });
+  if (existing) {
+    throw new ConflictError(`Patient with mobile number ${mobileNumber} already exists`);
+  }
+
+  const todayStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  const randSeq = Math.floor(1000 + Math.random() * 9000);
+  const generatedId = `P-${todayStr}-${randSeq}`;
+
+  const patient = new Patient({
+    patientId: generatedId,
+    name,
+    mobileNumber,
+    email: email || '',
+    dateOfBirth: new Date(dateOfBirth),
+    gender
+  });
+  
+  return await patient.save();
+};
