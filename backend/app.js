@@ -9,6 +9,7 @@ import authRoutes from './routes/auth.routes.js';
 import doctorRoutes from './routes/doctor.routes.js';
 import slotRoutes from './routes/slot.routes.js';
 import appointmentRoutes from './routes/appointment.routes.js';
+import userRoutes from './routes/user.routes.js';
 
 const app = express();
 
@@ -24,11 +25,27 @@ if (process.env.NODE_ENV === 'development') {
 
 app.use(express.json());
 
+// Swagger API Documentation Route
+import swaggerUi from 'swagger-ui-express';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const swaggerDocument = JSON.parse(
+  fs.readFileSync(path.join(__dirname, './config/swagger.json'), 'utf8')
+);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 // API Routes
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/doctors', doctorRoutes);
 app.use('/api/v1/slots', slotRoutes);
 app.use('/api/v1/appointments', appointmentRoutes);
+app.use('/api/v1/users', userRoutes);
 
 // Fallback for undefined routes
 app.use((req, res, next) => {

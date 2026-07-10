@@ -15,6 +15,16 @@ process.on('uncaughtException', (err) => {
 // Configure env variables
 dotenv.config();
 
+// Verify required env variables in production
+if (process.env.NODE_ENV === 'production') {
+  const requiredEnv = ['JWT_ACCESS_SECRET', 'JWT_REFRESH_SECRET', 'MONGODB_URI'];
+  const missing = requiredEnv.filter((env) => !process.env[env]);
+  if (missing.length > 0) {
+    logger.error(`CRITICAL CONFIG ERROR: Missing required environment variables: ${missing.join(', ')}`);
+    process.exit(1);
+  }
+}
+
 // Connect to Database
 connectDB();
 

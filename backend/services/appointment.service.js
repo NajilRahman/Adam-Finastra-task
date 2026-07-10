@@ -6,6 +6,7 @@ import { getAvailableSlots } from './slot.service.js';
 import { logAction } from './audit.service.js';
 import { broadcast } from '../config/socket.js';
 import { BadRequestError, ConflictError, NotFoundError } from '../utils/appError.js';
+import { generatePatientId } from '../utils/idGenerator.js';
 
 export const createAppointment = async (bookingData, userContext) => {
   const {
@@ -29,7 +30,7 @@ export const createAppointment = async (bookingData, userContext) => {
     throw new NotFoundError('Selected doctor does not exist');
   }
 
-  // 2. Validate slot availability (First Layer Defense)
+  // 2. Validate slot availability
   const availableSlots = await getAvailableSlots(doctorId, date);
   const matchedSlot = availableSlots.find((s) => s.startTime === slot.startTime);
   
@@ -43,11 +44,6 @@ export const createAppointment = async (bookingData, userContext) => {
   // 3. Resolve Patient record
   let patient;
   if (isNewPatient) {
-    // Generate a unique patient ID (e.g. P-20260710-1423)
-    const todayStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-    const randSeq = Math.floor(1000 + Math.random() * 9000);
-    const generatedId = `P-${todayStr}-${randSeq}`;
-
     // Verify uniqueness of mobile number
     const existingPatient = await Patient.findOne({ mobileNumber: patientMobile });
     if (existingPatient) {
@@ -55,7 +51,7 @@ export const createAppointment = async (bookingData, userContext) => {
     }
 
     patient = new Patient({
-      patientId: generatedId,
+      patientId: generatePatientId(),
       name: patientName,
       mobileNumber: patientMobile,
       email: patientEmail || '',
@@ -348,12 +344,8 @@ export const createPatient = async (patientData) => {
     throw new ConflictError(`Patient with mobile number ${mobileNumber} already exists`);
   }
 
-  const todayStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-  const randSeq = Math.floor(1000 + Math.random() * 9000);
-  const generatedId = `P-${todayStr}-${randSeq}`;
-
   const patient = new Patient({
-    patientId: generatedId,
+    patientId: generatePatientId(),
     name,
     mobileNumber,
     email: email || '',
