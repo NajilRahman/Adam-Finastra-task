@@ -22,16 +22,14 @@ const seedDB = async () => {
     const mongoUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/emr_appointment_system';
     console.log(`Connecting to database: ${mongoUri}`);
     await mongoose.connect(mongoUri);
-    console.log('Connected successfully. Cleaning database...');
+    // Check if database is already seeded by looking for the admin user
+    const adminExists = await User.findOne({ email: 'admin@emr.com' });
+    if (adminExists) {
+      console.log('Database already seeded. Skipping cleanup and seed.');
+      return;
+    }
 
-    // Clear existing collections
-    await User.deleteMany({});
-    await Doctor.deleteMany({});
-    await Schedule.deleteMany({});
-    await Patient.deleteMany({});
-    await Appointment.deleteMany({});
-    await AuditLog.deleteMany({});
-    console.log('Database cleaned.');
+    console.log('Database is empty. Seeding initial data...');
 
     // 1. Create Super Admin
     const admin = new User({

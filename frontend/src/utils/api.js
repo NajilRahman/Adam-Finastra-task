@@ -1,10 +1,21 @@
 import axios from 'axios';
 
+let rawBaseURL = import.meta.env.VITE_API_URL;
+if (rawBaseURL) {
+  if (!rawBaseURL.endsWith('/api/v1') && !rawBaseURL.endsWith('/api/v1/')) {
+    if (rawBaseURL.endsWith('/')) {
+      rawBaseURL = rawBaseURL.slice(0, -1);
+    }
+    rawBaseURL = `${rawBaseURL}/api/v1`;
+  }
+} else {
+  rawBaseURL = typeof window !== 'undefined' && (window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1'))
+    ? 'http://localhost:5000/api/v1'
+    : 'https://adam-finastra-task.onrender.com/api/v1';
+}
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 
-           (typeof window !== 'undefined' && (window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1'))
-             ? 'http://localhost:5000/api/v1'
-             : 'https://adam-finastra-task.onrender.com/api/v1'),
+  baseURL: rawBaseURL,
   headers: {
     'Content-Type': 'application/json'
   }
