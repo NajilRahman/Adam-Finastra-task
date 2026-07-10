@@ -45,19 +45,19 @@ const Navbar = () => {
 
       <div className="navbar-user-card glass-card">
         <div className="user-avatar">
-          {user.name.charAt(0).toUpperCase()}
+          {user?.name?.charAt(0).toUpperCase() || 'U'}
         </div>
         <div className="user-details">
-          <h4>{user.name}</h4>
-          <span className={`role-badge role-${user.role}`}>
-            {user.role.replace('_', ' ')}
+          <h4>{user?.name || 'User'}</h4>
+          <span className={`role-badge role-${user?.role || 'user'}`}>
+            {(user?.role || 'user').replace('_', ' ')}
           </span>
         </div>
       </div>
 
       <nav className="navbar-links">
         {/* Super Admin Links */}
-        {user.role === 'super_admin' && (
+        {user?.role === 'super_admin' && (
           <>
             <NavLink to="/dashboard" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
               <ShieldAlert size={18} />
@@ -75,7 +75,7 @@ const Navbar = () => {
         )}
 
         {/* Receptionist Links */}
-        {user.role === 'receptionist' && (
+        {user?.role === 'receptionist' && (
           <>
             <NavLink to="/dashboard" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
               <UserCheck size={18} />
@@ -93,7 +93,7 @@ const Navbar = () => {
         )}
 
         {/* Doctor Links */}
-        {user.role === 'doctor' && (
+        {user?.role === 'doctor' && (
           <>
             <NavLink to="/dashboard" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
               <ClipboardList size={18} />
