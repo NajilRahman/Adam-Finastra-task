@@ -1,0 +1,662 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Adam Finastra EMR API",
+    "description": "API Documentation for Adam Finastra Enterprise EMR Appointment Management System."
+  },
+  "host": "localhost:5000",
+  "basePath": "/api/v1",
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "Endpoints for User Login, Logout, and Token Refresh"
+    },
+    {
+      "name": "Doctors",
+      "description": "Endpoints for retrieving Doctors and managing Schedules/Accounts"
+    },
+    {
+      "name": "Slots",
+      "description": "Endpoints for retrieving dynamically generated slots"
+    },
+    {
+      "name": "Appointments",
+      "description": "Endpoints for booking, updating, retrieving and canceling appointments"
+    },
+    {
+      "name": "Users",
+      "description": "Endpoints for administrative user directory management"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\""
+    }
+  },
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "User Login",
+        "description": "Authenticates a user with email and password, returning JWT Access and Refresh Tokens.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "email",
+                "password"
+              ],
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "admin@emr.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "Admin123!"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful authentication"
+          },
+          "401": {
+            "description": "Invalid credentials or account deactivated"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "User Logout",
+        "description": "Logs out a user and invalidates their refresh token in the database.",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logged out successfully"
+          },
+          "401": {
+            "description": "Unauthorized access"
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Rotate Access Token",
+        "description": "Generates a new access token and rotatable refresh token using an active refresh token.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "refreshToken"
+              ],
+              "properties": {
+                "refreshToken": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tokens rotated successfully"
+          },
+          "401": {
+            "description": "Invalid or expired refresh token"
+          }
+        }
+      }
+    },
+    "/doctors": {
+      "get": {
+        "tags": [
+          "Doctors"
+        ],
+        "summary": "Get Doctor Profiles",
+        "description": "Retrieves lists of all active doctor profiles. Requires authentication.",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of doctor profiles retrieved"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Doctors"
+        ],
+        "summary": "Register Doctor User & Profile",
+        "description": "Creates a user account and doctor profile. Restricted to Super Admin.",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "name",
+                "email",
+                "password",
+                "department",
+                "specialization"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Dr. Sarah Jenkins"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "sarah.jenkins@emr.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "Doctor123!"
+                },
+                "department": {
+                  "type": "string",
+                  "example": "Dermatology"
+                },
+                "specialization": {
+                  "type": "string",
+                  "example": "Clinical Dermatology"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Doctor profile registered successfully"
+          },
+          "403": {
+            "description": "Restricted to Super Admin"
+          }
+        }
+      }
+    },
+    "/doctors/receptionists": {
+      "post": {
+        "tags": [
+          "Doctors"
+        ],
+        "summary": "Register Receptionist Account",
+        "description": "Creates a receptionist user account. Restricted to Super Admin.",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "name",
+                "email",
+                "password"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Emily Watson"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "emily.watson@emr.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "Reception123!"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Receptionist registered successfully"
+          },
+          "403": {
+            "description": "Restricted to Super Admin"
+          }
+        }
+      }
+    },
+    "/doctors/{id}/schedule": {
+      "get": {
+        "tags": [
+          "Doctors"
+        ],
+        "summary": "Get Doctor Schedule Config",
+        "description": "Retrieves the configured working sessions, break timings, and slot duration for a doctor. Requires authentication.",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Schedule retrieved successfully"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Doctors"
+        ],
+        "summary": "Configure Doctor Schedule",
+        "description": "Sets the working days, slot duration, sessions, and break times for a practitioner. Restricted to Super Admin.",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "workingDays",
+                "slotDuration",
+                "sessions",
+                "breakTimings"
+              ],
+              "properties": {
+                "workingDays": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "example": [1, 2, 3, 4, 5]
+                },
+                "slotDuration": {
+                  "type": "integer",
+                  "example": 15
+                },
+                "sessions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "startTime": { "type": "string", "example": "09:00" },
+                      "endTime": { "type": "string", "example": "12:00" }
+                    }
+                  }
+                },
+                "breakTimings": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "startTime": { "type": "string", "example": "12:00" },
+                      "endTime": { "type": "string", "example": "13:00" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Schedule configured successfully"
+          },
+          "403": {
+            "description": "Restricted to Super Admin"
+          }
+        }
+      }
+    },
+    "/slots": {
+      "get": {
+        "tags": [
+          "Slots"
+        ],
+        "summary": "Retrieve daily slots",
+        "description": "Generates available, booked, and past slots for a doctor on a target date. Non-overlapping and excludes break periods. Requires authentication.",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "doctorId",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "Format YYYY-MM-DD"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Slots list generated successfully"
+          }
+        }
+      }
+    },
+    "/appointments": {
+      "get": {
+        "tags": [
+          "Appointments"
+        ],
+        "summary": "Get Appointments Ledger",
+        "description": "Retrieves filtered list of appointments with server-side pagination. Doctors are restricted to seeing only their own appointments.",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          { "name": "page", "in": "query", "type": "integer", "default": 1 },
+          { "name": "limit", "in": "query", "type": "integer", "default": 10 },
+          { "name": "patientSearch", "in": "query", "type": "string" },
+          { "name": "doctorSearch", "in": "query", "type": "string" },
+          { "name": "mobileSearch", "in": "query", "type": "string" },
+          { "name": "status", "in": "query", "type": "string" },
+          { "name": "department", "in": "query", "type": "string" },
+          { "name": "startDate", "in": "query", "type": "string" },
+          { "name": "endDate", "in": "query", "type": "string" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Appointments listing fetched successfully"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Appointments"
+        ],
+        "summary": "Book Appointment Slot",
+        "description": "Books a slot. Enforces concurrency protection. If isNewPatient is set, a patient profile is registered automatically. Restricted to Receptionist and Admin.",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "doctorId",
+                "department",
+                "date",
+                "slot",
+                "purpose",
+                "isNewPatient"
+              ],
+              "properties": {
+                "doctorId": { "type": "string" },
+                "department": { "type": "string", "example": "Cardiology" },
+                "date": { "type": "string", "example": "2026-07-15" },
+                "slot": {
+                  "type": "object",
+                  "properties": {
+                    "startTime": { "type": "string", "example": "09:00" },
+                    "endTime": { "type": "string", "example": "09:15" }
+                  }
+                },
+                "purpose": { "type": "string", "example": "Regular checkup" },
+                "isNewPatient": { "type": "boolean", "example": true },
+                "patientName": { "type": "string", "example": "Alice Cooper" },
+                "patientMobile": { "type": "string", "example": "9876543210" },
+                "patientEmail": { "type": "string", "example": "alice@email.com" }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Appointment booked successfully"
+          },
+          "409": {
+            "description": "Slot double booking conflict"
+          }
+        }
+      }
+    },
+    "/appointments/{id}": {
+      "put": {
+        "tags": [
+          "Appointments"
+        ],
+        "summary": "Update Appointment Details",
+        "description": "Updates appointment purpose or records clinical consultation notes (to complete the session). Protected.",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "purpose": { "type": "string" },
+                "notes": { "type": "string", "example": "Patient advised rest for 2 days." },
+                "status": { "type": "string", "enum": ["completed"] }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Appointment updated successfully"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Appointments"
+        ],
+        "summary": "Cancel Appointment",
+        "description": "Cancels an appointment. Excludes it from unique booking indexes, freeing the slot. Restricted to Receptionist and Admin.",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Appointment cancelled successfully"
+          }
+        }
+      }
+    },
+    "/appointments/{id}/arrive": {
+      "post": {
+        "tags": [
+          "Appointments"
+        ],
+        "summary": "Mark Patient as Arrived",
+        "description": "Updates appointment workflow state to 'arrived'. Restricted to Receptionist and Admin.",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Patient status set to arrived"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get All Portal Users",
+        "description": "Lists all user directory logs. Restricted to Super Admin.",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User list fetched successfully"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Create Staff Account",
+        "description": "Directly registers a staff member (Admin, Receptionist, Doctor). Restricted to Super Admin.",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "name",
+                "email",
+                "password",
+                "role"
+              ],
+              "properties": {
+                "name": { "type": "string" },
+                "email": { "type": "string" },
+                "password": { "type": "string" },
+                "role": { "type": "string", "enum": ["super_admin", "receptionist", "doctor"] }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User created successfully"
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update Staff Status",
+        "description": "Enables deactivating user accounts. Restricted to Super Admin.",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "isActive": { "type": "boolean" },
+                "name": { "type": "string" }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User updated successfully"
+          }
+        }
+      }
+    }
+  }
+}
