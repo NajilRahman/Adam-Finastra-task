@@ -8,7 +8,7 @@
 .slots-empty-state {
   text-align: center;
   padding: 30px;
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: #f8fafc;
   border: 1px dashed var(--border-light);
   border-radius: var(--radius-sm);
   color: var(--text-secondary);
@@ -32,7 +32,7 @@
 .slot-time {
   font-family: var(--font-heading);
   font-weight: 700;
-  font-size: 1.05rem;
+  font-size: 1rem;
   margin-bottom: 4px;
 }
 
@@ -40,43 +40,42 @@
   font-size: 0.65rem;
   text-transform: uppercase;
   font-weight: 600;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.02em;
 }
 
 /* Available Slot */
 .slot-available {
-  border-color: rgba(13, 148, 136, 0.3);
-  color: #2dd4bf;
+  border-color: #bfdbfe;
+  background-color: #eff6ff;
+  color: #1e40af;
 }
 
 .slot-available:hover {
-  background-color: var(--primary-glow);
+  background-color: #dbeafe;
   border-color: var(--primary);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(13, 148, 136, 0.15);
+  transform: translateY(-1px);
 }
 
 /* Selected Slot */
 .slot-selected {
   background-color: var(--primary) !important;
-  border-color: #2dd4bf !important;
-  color: #fff !important;
-  box-shadow: 0 0 15px var(--primary-glow) !important;
+  border-color: var(--primary) !important;
+  color: #ffffff !important;
 }
 
 /* Booked Slot */
 .slot-booked {
-  border-color: rgba(244, 63, 94, 0.2);
-  background-color: rgba(244, 63, 94, 0.05);
-  color: #f87171;
-  opacity: 0.85;
+  border-color: #fecaca;
+  background-color: #fef2f2;
+  color: #b91c1c;
   cursor: not-allowed;
+  opacity: 0.8;
 }
 
 /* Past Slot */
 .slot-past {
   border-color: var(--border-light);
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: #f8fafc;
   color: var(--text-muted);
   cursor: not-allowed;
   opacity: 0.6;

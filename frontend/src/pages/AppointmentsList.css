@@ -1,5 +1,7 @@
 .appointments-list-page {
-  padding: 40px;
+  padding: 40px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .list-page-header {
@@ -7,36 +9,20 @@
 }
 
 .list-page-header h1 {
-  font-size: 2rem;
-  color: #fff;
+  font-size: 1.75rem;
+  color: var(--text-primary);
   margin-bottom: 8px;
+  font-weight: 700;
 }
 
 .list-page-header p {
-  color: var(--text-secondary);
+  color: var(--text-muted);
   font-size: 0.95rem;
 }
 
-.filter-card {
-  padding: 24px !important;
-}
-
-.filter-header {
+.filter-form {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  border-bottom: 1px solid var(--border-light);
-  padding-bottom: 12px;
-  margin-bottom: 20px;
-}
-
-.filter-header h2 {
-  font-size: 1.1rem;
-  color: #fff;
-}
-
-.filter-header svg {
-  color: var(--primary);
+  flex-direction: column;
 }
 
 .filter-inputs-grid {
@@ -52,16 +38,8 @@
   gap: 12px;
 }
 
-.table-header-flex {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  padding: 0 8px;
-}
-
 .results-count {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: var(--primary);
   font-weight: 700;
   text-transform: uppercase;
@@ -69,16 +47,7 @@
   background-color: var(--primary-glow);
   padding: 4px 10px;
   border-radius: 4px;
-}
-
-.sortable-col {
-  cursor: pointer;
-  user-select: none;
-  transition: color var(--transition-fast);
-}
-
-.sortable-col:hover {
-  color: #fff !important;
+  border: 1px solid var(--border-light);
 }
 
 .sortable-col svg {
@@ -88,26 +57,51 @@
   opacity: 0.7;
 }
 
-.font-semibold {
-  font-weight: 600;
-}
-
-.text-teal-400 {
-  color: #2dd4bf;
-}
-
-.font-mono {
-  font-family: monospace;
-}
-
-.text-xs {
-  font-size: 0.75rem;
-}
-
 .purpose-cell-text {
   max-width: 150px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   color: var(--text-secondary);
+}
+
+.action-buttons-wrap {
+  display: flex;
+  gap: 6px;
+}
+
+.action-icon-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.btn-arrive {
+  background-color: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.btn-arrive:hover {
+  background-color: #22c55e;
+  color: #fff;
+  border-color: #22c55e;
+}
+
+.btn-cancel {
+  background-color: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.btn-cancel:hover {
+  background-color: #ef4444;
+  color: #fff;
+  border-color: #ef4444;
 }

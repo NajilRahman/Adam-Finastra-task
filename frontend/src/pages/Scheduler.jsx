@@ -1,26 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import api from '../utils/api.js';
-import { initiateSocket, disconnectSocket } from '../utils/socket.js';
+import { initiateSocket } from '../utils/socket.js';
 import Navbar from '../components/Navbar.jsx';
 import SlotGrid from '../components/SlotGrid.jsx';
 import Modal from '../components/Modal.jsx';
+import Input from '../components/ui/Input.jsx';
+import Select from '../components/ui/Select.jsx';
+import Button from '../components/ui/Button.jsx';
 import { 
   CalendarDays, 
-  User, 
-  Stethoscope, 
-  Clock, 
-  FileText,
   AlertCircle,
   CheckCircle2
 } from 'lucide-react';
 import './Scheduler.css';
 
+/**
+ * Practitioner Scheduling and Slot reservation workflow orchestrator page
+ */
 const Scheduler = () => {
   const location = useLocation();
 
   // Selected Doctor, Department, and Date
-  const [departments, setDepartments] = useState(['Cardiology', 'Pediatrics', 'Dermatology', 'General Medicine', 'Orthopedics']);
+  const [departments] = useState(['Cardiology', 'Pediatrics', 'Dermatology', 'General Medicine', 'Orthopedics']);
   const [selectedDept, setSelectedDept] = useState('');
   const [doctors, setDoctors] = useState([]);
   const [selectedDocId, setSelectedDocId] = useState('');
@@ -50,7 +52,6 @@ const Scheduler = () => {
 
   // Alerts
   const [successMsg, setSuccessMsg] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
   const [modalError, setModalError] = useState('');
   const [bookingLoading, setBookingLoading] = useState(false);
 
@@ -76,7 +77,6 @@ const Scheduler = () => {
   // Auto-select first doctor in department if list changes
   useEffect(() => {
     if (filteredDoctors.length > 0) {
-      // Check if current doctor is in filtered list
       const exists = filteredDoctors.some(d => d._id === selectedDocId);
       if (!exists) {
         setSelectedDocId(filteredDoctors[0]._id);
@@ -113,14 +113,11 @@ const Scheduler = () => {
   useEffect(() => {
     const socket = initiateSocket();
     
-    // Connect socket if not connected
     if (socket && !socket.connected) {
       socket.connect();
     }
 
-    // Listener for newly created appointments
     const handleAppointmentCreated = (newApp) => {
-      // If the appointment matches our active doctor, date, we update that slot to booked!
       const appDateStr = new Date(newApp.date).toISOString().split('T')[0];
       if (
         String(newApp.doctor?._id || newApp.doctor) === String(selectedDocId) &&
@@ -136,7 +133,6 @@ const Scheduler = () => {
       }
     };
 
-    // Listener for cancelled appointments
     const handleAppointmentCancelled = (cancelledInfo) => {
       const appDateStr = new Date(cancelledInfo.date).toISOString().split('T')[0];
       if (
@@ -155,7 +151,7 @@ const Scheduler = () => {
 
     if (socket) {
       socket.on('appointment:created', handleAppointmentCreated);
-      socket.on('appointment:updated', handleAppointmentCreated); // also updates status changes
+      socket.on('appointment:updated', handleAppointmentCreated);
       socket.on('appointment:cancelled', handleAppointmentCancelled);
     }
 
@@ -176,7 +172,6 @@ const Scheduler = () => {
       setPatientId(patient.patientId);
       setPatientName(patient.name);
       setPatientMobile(patient.mobileNumber);
-      // Auto open modal if slot is selected
     }
   }, [location.state]);
 
@@ -244,70 +239,64 @@ const Scheduler = () => {
     }
   };
 
+  // Pre-formatted options lists
+  const deptOptions = [
+    { value: '', label: 'All Departments' },
+    ...departments.map(dept => ({ value: dept, label: dept }))
+  ];
+
+  const docOptions = [
+    { value: '', label: 'Choose doctor...' },
+    ...filteredDoctors.map(doc => ({ value: doc._id, label: `${doc.name} (${doc.department})` }))
+  ];
+
   return (
     <div className="dashboard-layout">
       <Navbar />
 
       <main className="dashboard-main-content scheduler-page">
         <div className="scheduler-header">
-          <h1>Clinic Appointment Scheduler</h1>
-          <p>Filter doctor schedules, view real-time slot grids, and process patient bookings.</p>
+          <h1>Practitioner Appointment Scheduler</h1>
+          <p>Filter doctor schedules, check slot grids in real-time, and process patient consultations.</p>
         </div>
 
         {successMsg && (
-          <div className="alert alert-success animate-fade-in" style={{ maxWidth: '1000px', margin: '0 auto 20px auto' }}>
+          <div className="alert alert-success animate-fade-in" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 16px', borderRadius: '6px', marginBottom: '20px', backgroundColor: '#ecfdf5', border: '1px solid #a7f3d0', color: '#065f46', maxWidth: '1100px', margin: '0 auto 20px auto' }}>
             <CheckCircle2 size={18} />
-            <span>{successMsg}</span>
+            <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>{successMsg}</span>
           </div>
         )}
 
-        <div className="scheduler-layout-grid glass-card">
-          
+        <div className="scheduler-layout-grid enterprise-card">
           {/* SCHEDULER FILTERS */}
           <div className="scheduler-filters-sidebar">
             <h2>Search Filters</h2>
             
-            <div className="form-group">
-              <label className="form-label">Clinic Department</label>
-              <select
-                className="form-select"
-                value={selectedDept}
-                onChange={(e) => setSelectedDept(e.target.value)}
-              >
-                <option value="">All Departments</option>
-                {departments.map((dept) => (
-                  <option key={dept} value={dept}>{dept}</option>
-                ))}
-              </select>
-            </div>
+            <Select
+              label="Clinic Department"
+              id="deptSelect"
+              options={deptOptions}
+              value={selectedDept}
+              onChange={(e) => setSelectedDept(e.target.value)}
+            />
 
-            <div className="form-group">
-              <label className="form-label">Practitioner</label>
-              <select
-                className="form-select"
-                value={selectedDocId}
-                onChange={(e) => setSelectedDocId(e.target.value)}
-                required
-              >
-                <option value="">Choose doctor...</option>
-                {filteredDoctors.map((doc) => (
-                  <option key={doc._id} value={doc._id}>
-                    {doc.name} ({doc.department})
-                  </option>
-                ))}
-              </select>
-            </div>
+            <Select
+              label="Practitioner"
+              id="docSelect"
+              options={docOptions}
+              value={selectedDocId}
+              onChange={(e) => setSelectedDocId(e.target.value)}
+              required
+            />
 
-            <div className="form-group">
-              <label className="form-label">Target Date</label>
-              <input
-                type="date"
-                className="form-input"
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-                required
-              />
-            </div>
+            <Input
+              label="Target Date"
+              id="targetDate"
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              required
+            />
           </div>
 
           {/* SCHEDULER SLOTS GRID */}
@@ -335,11 +324,10 @@ const Scheduler = () => {
               <div className="select-prompt-placeholder">
                 <CalendarDays size={48} />
                 <h3>Select Practitioner</h3>
-                <p>Choose a department and doctor from the sidebar to load the appointment time slots grid.</p>
+                <p>Choose a department and doctor from the sidebar filter list to load the appointment time slots grid.</p>
               </div>
             )}
           </div>
-
         </div>
 
         {/* BOOKING MODAL */}
@@ -350,7 +338,20 @@ const Scheduler = () => {
         >
           <form onSubmit={handleBookAppointment} className="booking-modal-form">
             {modalError && (
-              <div className="alert alert-danger" style={{ marginBottom: '16px', padding: '10px' }}>
+              <div 
+                className="alert alert-danger" 
+                style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '8px', 
+                  padding: '12px 16px', 
+                  borderRadius: '6px', 
+                  marginBottom: '20px', 
+                  backgroundColor: '#fef2f2', 
+                  border: '1px solid #fecaca', 
+                  color: '#991b1b' 
+                }}
+              >
                 <AlertCircle size={16} />
                 <span>{modalError}</span>
               </div>
@@ -374,98 +375,103 @@ const Scheduler = () => {
             </div>
 
             {isNewPatient ? (
-              /* NEW PATIENT FORM FIELDS */
               <div className="patient-form-fields animate-fade-in">
-                <div className="form-group">
-                  <label className="form-label">Full Name</label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    placeholder="Patient Name"
-                    value={patientName}
-                    onChange={(e) => setPatientName(e.target.value)}
-                    required
-                  />
-                </div>
+                <Input
+                  label="Full Name"
+                  id="patientName"
+                  placeholder="Patient Name"
+                  value={patientName}
+                  onChange={(e) => setPatientName(e.target.value)}
+                  required
+                />
                 
-                <div className="form-group">
-                  <label className="form-label">Mobile Number</label>
-                  <input
-                    type="tel"
-                    className="form-input"
-                    placeholder="10-digit number"
-                    value={patientMobile}
-                    onChange={(e) => setPatientMobile(e.target.value)}
+                <Input
+                  label="Mobile Number"
+                  id="patientMobile"
+                  type="tel"
+                  placeholder="10-digit number"
+                  value={patientMobile}
+                  onChange={(e) => setPatientMobile(e.target.value)}
+                  required
+                />
+
+                <Input
+                  label="Email Address (Optional)"
+                  id="patientEmail"
+                  type="email"
+                  placeholder="email@example.com"
+                  value={patientEmail}
+                  onChange={(e) => setPatientEmail(e.target.value)}
+                />
+
+                <div 
+                  className="form-grid-2" 
+                  style={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: '1fr 1fr', 
+                    gap: '16px' 
+                  }}
+                >
+                  <Input
+                    label="Date of Birth"
+                    id="patientDob"
+                    type="date"
+                    value={patientDob}
+                    onChange={(e) => setPatientDob(e.target.value)}
                     required
                   />
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Email Address (Optional)</label>
-                  <input
-                    type="email"
-                    className="form-input"
-                    placeholder="email@example.com"
-                    value={patientEmail}
-                    onChange={(e) => setPatientEmail(e.target.value)}
-                  />
-                </div>
-
-                <div className="form-grid-2">
-                  <div className="form-group">
-                    <label className="form-label">Date of Birth</label>
-                    <input
-                      type="date"
-                      className="form-input"
-                      value={patientDob}
-                      onChange={(e) => setPatientDob(e.target.value)}
-                      required
-                    />
-                  </div>
                   
-                  <div className="form-group">
-                    <label className="form-label">Gender</label>
-                    <select
-                      className="form-select"
-                      value={patientGender}
-                      onChange={(e) => setPatientGender(e.target.value)}
-                      required
-                    >
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
+                  <Select
+                    label="Gender"
+                    id="patientGender"
+                    options={[
+                      { value: 'male', label: 'Male' },
+                      { value: 'female', label: 'Female' },
+                      { value: 'other', label: 'Other' }
+                    ]}
+                    value={patientGender}
+                    onChange={(e) => setPatientGender(e.target.value)}
+                    required
+                  />
                 </div>
               </div>
             ) : (
-              /* EXISTING PATIENT FORM FIELDS */
               <div className="patient-form-fields animate-fade-in">
-                <div className="form-group">
-                  <label className="form-label">Patient ID</label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    placeholder="e.g. P-20260710-3849"
-                    value={patientId}
-                    onChange={(e) => setPatientId(e.target.value)}
-                    required
-                  />
-                </div>
+                <Input
+                  label="Patient ID"
+                  id="patientId"
+                  placeholder="e.g. P-20260710-3849"
+                  value={patientId}
+                  onChange={(e) => setPatientId(e.target.value)}
+                  required
+                />
                 {location.state?.patient && (
-                  <div className="alert alert-success" style={{ padding: '8px 12px', fontSize: '0.8rem' }}>
-                    Patient Loaded: <strong>{location.state.patient.name}</strong> ({location.state.patient.mobileNumber})
+                  <div 
+                    className="alert alert-success" 
+                    style={{ 
+                      padding: '8px 12px', 
+                      fontSize: '0.8rem', 
+                      backgroundColor: '#ecfdf5', 
+                      border: '1px solid #a7f3d0', 
+                      color: '#065f46',
+                      borderRadius: '4px',
+                      marginBottom: '16px',
+                      fontWeight: 500
+                    }}
+                  >
+                    Patient Profile Pre-loaded: <strong>{location.state.patient.name}</strong> ({location.state.patient.mobileNumber})
                   </div>
                 )}
               </div>
             )}
 
             <div className="form-group">
-              <label className="form-label">Purpose of Appointment</label>
+              <label className="form-label" htmlFor="bookingPurpose">Purpose of Appointment</label>
               <textarea
+                id="bookingPurpose"
                 className="form-textarea"
                 rows="3"
-                placeholder="Describe consultation reason..."
+                placeholder="Describe clinical symptoms or reason of visit..."
                 value={bookingPurpose}
                 onChange={(e) => setBookingPurpose(e.target.value)}
                 required
@@ -473,26 +479,23 @@ const Scheduler = () => {
             </div>
 
             <div className="modal-footer-btns">
-              <button
-                type="button"
-                className="btn btn-secondary"
+              <Button
+                variant="secondary"
                 onClick={() => setIsModalOpen(false)}
                 disabled={bookingLoading}
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
-                className="btn btn-primary"
+                loading={bookingLoading}
                 disabled={bookingLoading}
               >
-                {bookingLoading ? 'Processing Booking...' : 'Confirm Appointment'}
-              </button>
+                Confirm Appointment
+              </Button>
             </div>
-
           </form>
         </Modal>
-
       </main>
     </div>
   );

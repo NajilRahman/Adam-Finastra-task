@@ -4,9 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { setCredentials, setLoading, setError } from '../store/slices/authSlice.js';
 import api from '../utils/api.js';
 import { connectSocket } from '../utils/socket.js';
-import { ShieldAlert, Mail, Lock } from 'lucide-react';
+import Input from '../components/ui/Input.jsx';
+import Button from '../components/ui/Button.jsx';
+import { Activity, Mail, Lock } from 'lucide-react';
 import './Login.css';
 
+/**
+ * Clean login page using reusable UI components and professional typography
+ */
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -46,10 +51,10 @@ const Login = () => {
 
   return (
     <div className="login-page-container">
-      <div className="login-wrapper glass-card animate-fade-in">
+      <div className="login-wrapper enterprise-card animate-fade-in">
         <div className="login-header">
           <div className="login-logo">
-            <ShieldAlert size={36} />
+            <Activity size={32} />
           </div>
           <h1>Adam Finastra EMR</h1>
           <p>Enterprise Clinic Appointment Manager</p>
@@ -62,45 +67,37 @@ const Login = () => {
             </div>
           )}
 
-          <div className="form-group">
-            <label className="form-label" htmlFor="email">Email Address</label>
-            <div className="input-with-icon">
-              <Mail size={18} className="input-icon" />
-              <input
-                id="email"
-                type="email"
-                className="form-input icon-padding"
-                placeholder="receptionist@emr.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-          </div>
+          <Input
+            label="Email Address"
+            id="email"
+            type="email"
+            placeholder="e.g. receptionist@emr.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            icon={Mail}
+            required
+          />
 
-          <div className="form-group">
-            <label className="form-label" htmlFor="password">Password</label>
-            <div className="input-with-icon">
-              <Lock size={18} className="input-icon" />
-              <input
-                id="password"
-                type="password"
-                className="form-input icon-padding"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-          </div>
+          <Input
+            label="Password"
+            id="password"
+            type="password"
+            placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            icon={Lock}
+            required
+          />
 
-          <button
+          <Button
             type="submit"
-            className="btn btn-primary w-full login-btn"
+            className="w-full login-btn"
+            loading={loading}
             disabled={loading}
+            style={{ marginTop: '10px' }}
           >
-            {loading ? 'Authenticating...' : 'Sign In'}
-          </button>
+            Sign In
+          </Button>
         </form>
 
         <div className="login-footer">

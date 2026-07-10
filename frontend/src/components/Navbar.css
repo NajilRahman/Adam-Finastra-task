@@ -12,15 +12,16 @@
 .navbar-logo {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 30px;
+  gap: 8px;
+  margin-bottom: 24px;
 }
 
 .navbar-logo h2 {
-  font-size: 1.25rem;
-  font-weight: 800;
-  color: #fff;
-  letter-spacing: 0.05em;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
 }
 
 .navbar-logo span {
@@ -28,102 +29,114 @@
   color: var(--primary);
   text-transform: uppercase;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.05em;
   display: block;
+  white-space: nowrap;
 }
 
 .logo-icon {
   color: var(--primary);
+  flex-shrink: 0;
 }
 
 .navbar-user-card {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 16px !important;
+  padding: 12px !important;
   margin-bottom: 24px;
-  background: rgba(255, 255, 255, 0.03) !important;
+  background-color: #f8fafc !important;
+  border: 1px solid var(--border-light) !important;
 }
 
 .user-avatar {
-  width: 44px;
-  height: 44px;
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  width: 36px;
+  height: 36px;
+  background-color: #e2e8f0;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-heading);
-  font-weight: 700;
-  color: #fff;
-  font-size: 1.2rem;
-  box-shadow: 0 4px 10px rgba(13, 148, 136, 0.2);
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .user-details h4 {
-  font-size: 0.95rem;
-  color: #fff;
-  margin-bottom: 4px;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  margin-bottom: 2px;
 }
 
 .role-badge {
   font-size: 0.65rem;
-  font-weight: 700;
+  font-weight: 600;
   text-transform: uppercase;
-  padding: 2px 8px;
-  border-radius: 50px;
-  letter-spacing: 0.05em;
+  padding: 1px 6px;
+  border-radius: 4px;
   display: inline-block;
 }
 
 .role-super_admin {
-  background-color: rgba(139, 92, 246, 0.15);
-  color: #a78bfa;
-  border: 1px solid rgba(139, 92, 246, 0.2);
+  background-color: #f3e8ff;
+  color: #6b21a8;
+  border: 1px solid #e9d5ff;
 }
 
 .role-receptionist {
-  background-color: rgba(13, 148, 136, 0.15);
-  color: #2dd4bf;
-  border: 1px solid rgba(13, 148, 136, 0.2);
+  background-color: #ccfbf1;
+  color: #0f766e;
+  border: 1px solid #99f6e4;
 }
 
 .role-doctor {
-  background-color: rgba(16, 185, 129, 0.15);
-  color: #34d399;
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  background-color: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
 }
 
 .navbar-links {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
   flex-grow: 1;
+  overflow-y: auto;
 }
 
 .nav-item {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 16px;
+  padding: 10px 14px;
   color: var(--text-secondary);
   text-decoration: none;
   border-radius: var(--radius-sm);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 500;
   transition: all var(--transition-fast);
+  border-left: 3px solid transparent;
 }
 
 .nav-item:hover {
-  background-color: rgba(255, 255, 255, 0.03);
-  color: #fff;
+  background-color: #f1f5f9;
+  color: var(--text-primary);
 }
 
 .nav-item.active {
   background-color: var(--primary-glow);
-  color: #2dd4bf;
-  border-left: 3px solid var(--primary);
+  color: var(--primary);
+  border-left-color: var(--primary);
   font-weight: 600;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
 }
 
 .btn-logout {
@@ -131,20 +144,21 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 12px;
-  background-color: rgba(244, 63, 94, 0.08);
-  border: 1px solid rgba(244, 63, 94, 0.15);
-  color: #f87171;
+  padding: 10px;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: var(--danger);
   border-radius: var(--radius-sm);
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 500;
+  font-size: 0.875rem;
   font-family: var(--font-heading);
   transition: all var(--transition-fast);
-  margin-top: 20px;
+  margin-top: auto;
 }
 
 .btn-logout:hover {
   background-color: var(--danger);
-  color: #fff;
-  box-shadow: 0 4px 12px var(--danger-glow);
+  color: #ffffff;
+  border-color: var(--danger);
 }

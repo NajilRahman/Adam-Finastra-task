@@ -10,7 +10,8 @@ import {
   LogOut, 
   ShieldAlert, 
   ClipboardList,
-  UserCheck
+  UserCheck,
+  Activity
 } from 'lucide-react';
 import './Navbar.css';
 
@@ -36,7 +37,7 @@ const Navbar = () => {
   return (
     <aside className="navbar-container">
       <div className="navbar-logo">
-        <ShieldAlert size={28} className="logo-icon" />
+        <Activity size={28} className="logo-icon" />
         <div>
           <h2>Adam Finastra EMR</h2>
           <span>Enterprise Portal</span>
