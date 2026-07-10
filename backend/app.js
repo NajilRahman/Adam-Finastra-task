@@ -31,7 +31,7 @@ app.use('/api/v1/slots', slotRoutes);
 app.use('/api/v1/appointments', appointmentRoutes);
 
 // Fallback for undefined routes
-app.all('/*', (req, res, next) => {
+app.use((req, res, next) => {
   next(new NotFoundError(`Can't find ${req.originalUrl} on this server!`));
 });
 
