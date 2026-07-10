@@ -1,7 +1,10 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1',
+  baseURL: import.meta.env.VITE_API_URL || 
+           (typeof window !== 'undefined' && (window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1'))
+             ? 'http://localhost:5000/api/v1'
+             : 'https://adam-finastra-task.onrender.com/api/v1'),
   headers: {
     'Content-Type': 'application/json'
   }
