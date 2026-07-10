@@ -58,13 +58,14 @@ export const getAvailableSlots = async (doctorId, date) => {
 
   const now = new Date();
   const todayUTC = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+  const isPastDate = targetDate.getTime() < todayUTC.getTime();
   const isToday = targetDate.getTime() === todayUTC.getTime();
 
   const currentMins = now.getHours() * 60 + now.getMinutes();
 
   return slots.map((slot) => {
     const isBooked = bookedSlotStarts.has(slot.startTime);
-    const isPast = isToday && slot.startMins < currentMins;
+    const isPast = isPastDate || (isToday && slot.startMins < currentMins);
     
     return {
       startTime: slot.startTime,
