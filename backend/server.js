@@ -25,8 +25,16 @@ if (process.env.NODE_ENV === 'production') {
   }
 }
 
-// Connect to Database
-connectDB();
+// Connect to Database and Auto-Seed
+import { seedDB } from './scripts/seed.js';
+
+connectDB().then(async () => {
+  try {
+    await seedDB(false);
+  } catch (err) {
+    logger.error(`Auto-seeding failed: ${err.message}`);
+  }
+});
 
 // Create HTTP Server
 const server = http.createServer(app);

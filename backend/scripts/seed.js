@@ -17,15 +17,20 @@ const __dirname = path.dirname(__filename);
 // Configure env variables
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
-const seedDB = async () => {
+export const seedDB = async (shouldCloseConnection = true) => {
   try {
     const mongoUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/emr_appointment_system';
-    console.log(`Connecting to database: ${mongoUri}`);
-    await mongoose.connect(mongoUri);
+    if (mongoose.connection.readyState === 0) {
+      console.log(`Connecting to database: ${mongoUri}`);
+      await mongoose.connect(mongoUri);
+    }
     // Check if database is already seeded by looking for the admin user
     const adminExists = await User.findOne({ email: 'admin@emr.com' });
     if (adminExists) {
       console.log('Database already seeded. Skipping cleanup and seed.');
+      if (shouldCloseConnection) {
+        mongoose.connection.close();
+      }
       return;
     }
 
@@ -144,11 +149,19 @@ const seedDB = async () => {
     console.log('Sample patients created (Alice Johnson, Bob Miller).');
 
     console.log('Database seeding complete successfully!');
-    mongoose.connection.close();
+    if (shouldCloseConnection) {
+      mongoose.connection.close();
+    }
   } catch (error) {
     console.error('Error during seeding:', error);
-    process.exit(1);
+    if (shouldCloseConnection) {
+      process.exit(1);
+    }
   }
 };
 
-seedDB();
+const nodePath = process.argv[1] ? path.resolve(process.argv[1]) : '';
+const modulePath = fileURLToPath(import.meta.url);
+if (nodePath === modulePath) {
+  seedDB(true);
+}
